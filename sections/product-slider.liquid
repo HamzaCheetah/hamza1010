@@ -1,0 +1,79 @@
+<section class="product-slider-section">
+  <div class="container">
+    {% if section.settings.heading != blank %}
+      <h2 class="slider-heading">{{ section.settings.heading }}</h2>
+    {% endif %}
+
+    <div class="product-slider" id="slider-{{ section.id }}">
+      {% for product_obj in section.settings.products %}
+
+
+        {% if product_obj %}
+          <div class="product-card">
+            <a href="{{ product_obj.url }}">
+              <img 
+                src="{{ product_obj.featured_image | image_url: width: 400 }}" 
+                alt="{{ product_obj.title }}"
+                class="product-img"
+              >
+              <h3 class="product-title">{{ product_obj.title }}</h3>
+              <p class="product-price">{{ product_obj.price | money }}</p>
+            </a>
+          </div>
+        {% endif %}
+
+      {% endfor %}
+    </div>
+
+    <!-- Slider Navigation -->
+    <button class="slider-btn prev-btn" data-slider="{{ section.id }}">&#10094;</button>
+    <button class="slider-btn next-btn" data-slider="{{ section.id }}">&#10095;</button>
+  </div>
+</section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const nextButtons = document.querySelectorAll(".next-btn");
+    const prevButtons = document.querySelectorAll(".prev-btn");
+
+    nextButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const slider = document.querySelector(`#slider-${btn.dataset.slider}`);
+        slider.scrollBy({ left: 300, behavior: "smooth" });
+      });
+    });
+
+    prevButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const slider = document.querySelector(`#slider-${btn.dataset.slider}`);
+        slider.scrollBy({ left: -300, behavior: "smooth" });
+      });
+    });   
+  });
+</script>
+
+
+{% schema %}
+{
+  "name": "Product Slider",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Featured Products"
+    },
+    {
+      "type": "product_list",
+      "id": "products",
+      "label": "Select Products",
+      "limit": 10
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Slider"
+    }
+  ]
+}
+{% endschema %}
