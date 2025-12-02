@@ -1,29 +1,137 @@
-<section class="testimonial-section">
-  <div class="container">
-    <h2 class="testimonial-heading">{{ section.settings.heading }}</h2>
+<div class="testimonial-section">
+  <div class="testimonial-wrapper">
+    {% for block in section.blocks %}
+      <div class="testimonial-slide">
+        
+        {% if block.settings.avatar %}
+          <img src="{{ block.settings.avatar | image_url: width: 120 }}" alt="{{ block.settings.author }}" class="testimonial-avatar">
+        {% endif %}
 
-    <div class="testimonial-wrapper">
-      {% for block in section.blocks %}
-        <div class="testimonial-card">
-          <p class="testimonial-text">{{ block.settings.review }}</p>
-          <p class="testimonial-name">{{ block.settings.name }}</p>
-        </div>
-      {% endfor %}
-    </div>
+        <p class="testimonial-text">“{{ block.settings.text }}”</p>
+        <h3 class="testimonial-name">— {{ block.settings.author }}</h3>
+
+      </div>
+    {% endfor %}
   </div>
-</section>
+
+  {% if section.blocks.size >= 1 %}
+    <div class="testimonial-controls">
+      <button id="prevTestimonial" class="testimonial-btn">❮</button>
+      <button id="nextTestimonial" class="testimonial-btn">❯</button>
+    </div>
+  {% endif %}
+</div>
+
+<style>
+  .testimonial-section {
+    padding: 60px 20px;
+    text-align: center;
+    max-width: 750px;
+    margin: auto;
+  }
+
+  .testimonial-wrapper {
+    position: relative;
+    overflow: hidden;
+    min-height: 230px;
+  }
+
+  .testimonial-slide {
+    display: none;
+    animation: fade 0.5s ease-in-out;
+  }
+
+  .testimonial-slide.active {
+    display: block;
+  }
+
+  .testimonial-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 15px;
+    border: 3px solid #eee;
+  }
+
+  .testimonial-text {
+    font-size: 18px;
+    color: #333;
+    line-height: 1.6;
+    margin: 10px auto;
+    max-width: 600px;
+  }
+
+  .testimonial-name {
+    margin-top: 12px;
+    font-weight: 600;
+    color: #111;
+  }
+
+  @keyframes fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .testimonial-controls {
+    margin-top: 25px;
+  }
+
+  .testimonial-btn {
+    background: black;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 50%;
+    font-size: 18px;
+    border: none;
+    cursor: pointer;
+  }
+
+  .testimonial-btn:hover {
+    background: #333;
+  }
+</style>
+
+<script>
+  function initTestimonialSlider() {
+    const slides = document.querySelectorAll(".testimonial-slide");
+    let current = 0;
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.toggle("active", i === index);
+      });
+    }
+
+    const nextBtn = document.querySelector("#nextTestimonial");
+    const prevBtn = document.querySelector("#prevTestimonial");
+
+    if (nextBtn && prevBtn) {
+      nextBtn.onclick = () => {
+        current = (current + 1) % slides.length;
+        showSlide(current);
+      };
+      prevBtn.onclick = () => {
+        current = (current - 1 + slides.length) % slides.length;
+        showSlide(current);
+      };
+    }
+
+    if (slides.length > 0) showSlide(0);
+  }
+
+  // Run on normal page load
+  document.addEventListener("DOMContentLoaded", initTestimonialSlider);
+
+  // Run again inside Shopify Customizer when blocks reload
+  document.addEventListener("shopify:section:load", initTestimonialSlider);
+</script>
+
 
 {% schema %}
 {
   "name": "Testimonial Slider",
-  "settings": [
-    {
-      "type": "text",
-      "id": "heading",
-      "label": "Heading",
-      "default": "What Our Customers Say"
-    }
-  ],
+  "settings": [],
   "blocks": [
     {
       "type": "testimonial",
@@ -31,17 +139,23 @@
       "settings": [
         {
           "type": "textarea",
-          "id": "review",
-          "label": "Review"
+          "id": "text",
+          "label": "Review Text"
         },
         {
           "type": "text",
-          "id": "name",
-          "label": "Customer Name"
+          "id": "author",
+          "label": "Author Name"
+        },
+        {
+          "type": "image_picker",
+          "id": "avatar",
+          "label": "Avatar Image"
         }
       ]
     }
   ],
+  "max_blocks": 10,
   "presets": [
     {
       "name": "Testimonial Slider"
