@@ -612,6 +612,7 @@
             {%- else -%}
               {{ 'product-apparel-2' | placeholder_svg_tag: 'placeholder-svg' }}
             {% endif %}
+             {%- render 'badges', product: card_product -%}
           </div>
         </div>
       </div>

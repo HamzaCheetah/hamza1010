@@ -120,10 +120,8 @@
     if (slides.length > 0) showSlide(0);
   }
 
-  // Run on normal page load
   document.addEventListener("DOMContentLoaded", initTestimonialSlider);
 
-  // Run again inside Shopify Customizer when blocks reload
   document.addEventListener("shopify:section:load", initTestimonialSlider);
 </script>
 
