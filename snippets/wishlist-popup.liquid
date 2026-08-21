@@ -11,7 +11,7 @@ Wishlist Popup (no app) — centered modal with real Shopify Add to Cart buttons
     {% assign p = all_products[handle] %}
     {% if p %}
       <div class="wl-product-form-wrapper" data-handle="{{ handle }}">
-        {% render 'buy-buttons', product: p, section_id: section.id, product_form_id: "wl-form-" | append: handle %}
+        {% render 'buy-buttons', product: p, section_id: section.id, product_form_id: "wl-form-", append: handle %}
       </div>
     {% endif %}
   {%- endfor -%}
@@ -179,3 +179,15 @@ Wishlist Popup (no app) — centered modal with real Shopify Add to Cart buttons
   document.addEventListener('shopify:section:load', () => syncHearts()); 
 })();
 </script>
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: '{% render ''buy-buttons'', product: p, section_id: section.id, product_form_id:
+    "wl-form-" | append: handle %}'
+  to: '{% render ''buy-buttons'', product: p, section_id: section.id, product_form_id:
+    "wl-form-", append: handle %}'
+  position: 519..626
+{% endcomment %}
